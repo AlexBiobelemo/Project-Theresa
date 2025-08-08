@@ -1,0 +1,12 @@
+Flask
+google-generativeai
+python-dotenv
+python-docx
+pdfplumber
+protobuf==4.25.3
+Flask-SQLAlchemy
+Flask-Login
+Flask-Migrate
+Flask-WTF
+email-validator
+html2docx
