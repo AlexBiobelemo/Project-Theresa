@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header style="text-align: center; margin-top: 2rem;">
+    <h1>Automated Resume Customizer</h1>
+    <p>Upload your resume and a job description to get AI-powered suggestions.</p>
+</header>
+
+<article>
+    <form id="analysis-form">
+        <div class="grid">
+            <label for="resume">
+                Upload Your Resume (.docx, .pdf)
+                <input type="file" id="resume" name="resume" required>
+            </label>
+            <label for="job_description">
+                Paste Job Description
+                <textarea id="job_description" name="job_description" rows="16" placeholder="Paste the full job description here..." required></textarea>
+            </label>
+        </div>
+        <button id="submit-button" type="submit">Analyze Now</button>
+    </form>
+</article>
+
+<div id="loading-spinner" style="text-align: center; margin-top: 2rem; display: none;">
+    <article aria-busy="true"></article>
+    <p><em>Analyzing... This may take up to 30 seconds.</em></p>
+</div>
+
+<section id="results-container"></section>
+
+
+<script>
+    const analysisForm = document.getElementById('analysis-form');
+    const submitButton = document.getElementById('submit-button');
+    const resultsContainer = document.getElementById('results-container');
+    const loadingSpinner = document.getElementById('loading-spinner');
+
+    analysisForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default page reload
+
+        loadingSpinner.style.display = 'block';
+        resultsContainer.innerHTML = '';
+        submitButton.disabled = true;
+        submitButton.ariaBusy = "true";
+
+        const formData = new FormData(analysisForm);
+
+        fetch("{{ url_for('main.api_analyze') }}", {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            resultsContainer.innerHTML = generateResultsHtml(data);
+            attachCopyButtonListeners();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            resultsContainer.innerHTML = `<article style="background-color: var(--pico-card-background-color); border-color: var(--pico-primary-border);"><p>⚠️ Error: ${error.message}</p></article>`;
+        })
+        .finally(() => {
+            loadingSpinner.style.display = 'none';
+            submitButton.disabled = false;
+            submitButton.ariaBusy = "false";
+        });
+    });
+
+    function generateResultsHtml(data) {
+        // **THE FIX**: Access data from the 'analysis_results' sub-object
+        const analysis = data.analysis_results || {}; // Use a fallback empty object
+
+        const missingKeywordsHtml = analysis.missing_keywords && analysis.missing_keywords.length > 0
+            ? analysis.missing_keywords.map(kw => `<li><code>${kw}</code></li>`).join('')
+            : '<li>No missing keywords identified. Great job!</li>';
+
+        const suggestionsHtml = analysis.resume_suggestions && analysis.resume_suggestions.length > 0
+            ? analysis.resume_suggestions.map((sugg, index) => `
+                <details open>
+                    <summary>Suggestion for: "<em>${sugg.original.substring(0, 80)}...</em>"</summary>
+                    <div class="suggestion-container">
+                        <p><strong>Original:</strong> ${sugg.original}</p>
+                        <p><strong>Rewritten:</strong> <span id="suggestion-${index}">${sugg.rewritten}</span></p>
+                        <button class="copy-btn" data-clipboard-target="#suggestion-${index}" style="width: auto; padding: 5px 10px; margin-bottom: 1rem;">Copy Rewritten Text</button>
+                    </div>
+                </details>
+            `).join('')
+            : '<p>No specific rewrite suggestions were generated.</p>';
+
+        const coverLetterThemesHtml = analysis.cover_letter_themes && analysis.cover_letter_themes.length > 0
+            ? analysis.cover_letter_themes.map(theme => `<li>${theme}</li>`).join('')
+            : '<li>No specific themes were identified.</li>';
+
+        // This part correctly looks for the 'structured_resume' object
+        const designerButtonHtml = data.structured_resume
+            ? `<a href="{{ url_for('main.choose_template') }}" role="button" class="contrast">Design This Resume &raquo;</a>`
+            : '';
+
+        const coverLetterButtonHtml = `
+            <form action="{{ url_for('main.generate_cover_letter') }}" method="post" style="margin: 0;">
+                <button type="submit">Generate Full Cover Letter</button>
+            </form>
+        `;
+
+        return `
+        <article>
+            <header class="grid">
+                <div><h2>Analysis Results (Match Score: ${analysis.match_score || 'N/A'}%)</h2></div>
+                <div style="text-align: right; align-self: center;">${designerButtonHtml}</div>
+            </header>
+
+            <h3><ins>Missing Keywords</ins></h3>
+            <p>Consider weaving these keywords from the job description into your resume:</p>
+            <ul>${missingKeywordsHtml}</ul><hr>
+
+            <h3><ins>Resume Bullet Point Suggestions</ins></h3>
+            ${suggestionsHtml}<hr>
+
+            <h3><ins>Cover Letter Themes</ins></h3>
+            <p>Focus on these themes when writing your cover letter:</p>
+            <ul>${coverLetterThemesHtml}</ul>
+
+            <footer>
+                ${coverLetterButtonHtml}
+            </footer>
+        </article>`;
+    }
+
+    function attachCopyButtonListeners() {
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetSelector = btn.dataset.clipboardTarget;
+                const textElement = document.querySelector(targetSelector);
+                navigator.clipboard.writeText(textElement.innerText).then(() => {
+                    const originalText = btn.innerText;
+                    btn.innerText = 'Copied!';
+                    setTimeout(() => { btn.innerText = originalText; }, 2000);
+                }).catch(err => { console.error('Failed to copy: ', err); });
+            });
+        });
+    }
+</script>
+{% endblock %}

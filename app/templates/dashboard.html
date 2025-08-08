@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header style="text-align: center; margin-top: 2rem;">
+    <h1>My Dashboard</h1>
+    <p>Here are all the resumes you have analyzed and saved.</p>
+</header>
+
+{% if resumes %}
+    {% for resume in resumes %}
+        <article>
+            <header>
+                <h4>{{ resume.original_filename }}</h4>
+                <small>Uploaded on: {{ resume.timestamp.strftime('%B %d, %Y') }}</small>
+            </header>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Analyzed Against Job Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Match Score</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for analysis in resume.analyses %}
+                    <tr>
+                        <td><em>{{ analysis.job_description | truncate(80) }}</em></td>
+                        <td>{{ analysis.timestamp.strftime('%b %d, %I:%M %p') }}</td>
+                        <td><strong>{{ analysis.analysis_data.get('match_score', 'N/A') }}%</strong></td>
+                        <td>
+                            <a href="{{ url_for('main.view_analysis', analysis_id=analysis.id) }}" role="button" class="contrast outline">View Details</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No analyses have been performed with this resume yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </article>
+    {% endfor %}
+{% else %}
+    <article style="text-align: center;">
+        <p>You haven't analyzed any resumes yet.</p>
+        <footer>
+            <a href="{{ url_for('main.index') }}" role="button">Analyze Your First Resume</a>
+        </footer>
+    </article>
+{% endif %}
+
+{% endblock %}

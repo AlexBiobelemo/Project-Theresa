@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ resume.get('full_name', 'Resume') }} - Designer</title>
+
+    <script src="https://cdn.tiny.cloud/1/dvfe1shf3ehpticvb36ffjniv3phj3zz75aw0rdqt6j0bdma/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+    {% block styles %}{% endblock %}
+
+    <style media="print">
+        /* This CSS hides the controls and removes shadows when you print */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        body {
+            background-color: #fff !important; /* Force white background */
+            padding: 0 !important;
+        }
+        .controls, .editor-wrapper > br {
+            display: none !important;
+        }
+        #resume-editor {
+            box-shadow: none !important;
+            margin: 0 !important;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-wrapper">
+        <div class="controls">
+            <button id="print-pdf-btn">Print / Save as PDF</button>
+        </div>
+        <br>
+        <div id="resume-editor">
+            {% block resume_design %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+        tinymce.init({
+          selector: '#resume-editor',
+          inline: true,
+          menubar: false,
+          plugins: ['autolink', 'lists', 'link'],
+          toolbar: 'undo redo | bold italic underline | bullist numlist | link',
+        });
+
+        const printButton = document.getElementById('print-pdf-btn');
+
+        printButton.addEventListener('click', () => {
+            // This simple command opens the browser's print dialog
+            window.print();
+        });
+    </script>
+</body>
+</html>

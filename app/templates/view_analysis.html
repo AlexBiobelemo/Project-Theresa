@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header style="margin-top: 2rem;">
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{ url_for('main.dashboard') }}">My Dashboard</a></li>
+            <li>Analysis Details</li>
+        </ul>
+    </nav>
+    <h1>Analysis for <em>{{ analysis.resume.original_filename }}</em></h1>
+    <p><strong>Analysis Date:</strong> {{ analysis.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</p>
+</header>
+
+<article>
+    <header class="grid">
+        <div><h2>Analysis Results (Match Score: {{ analysis.analysis_data.get('match_score', 'N/A') }}%)</h2></div>
+        <div style="text-align: right; align-self: center;">
+            <a href="#" role="button" class="contrast" disabled>Load in Designer &raquo;</a>
+        </div>
+    </header>
+
+    <h3><ins>Missing Keywords</ins></h3>
+    <ul>
+        {% for keyword in analysis.analysis_data.get('missing_keywords', []) %}
+            <li><code>{{ keyword }}</code></li>
+        {% else %}
+            <li>No missing keywords identified.</li>
+        {% endfor %}
+    </ul><hr>
+
+    <h3><ins>Resume Bullet Point Suggestions</ins></h3>
+    {% for suggestion in analysis.analysis_data.get('resume_suggestions', []) %}
+        <details open>
+            <summary>Suggestion for: "<em>{{ suggestion.get('original', '...')|truncate(80) }}</em>"</summary>
+            <blockquote>
+                <strong>Original:</strong> {{ suggestion.get('original', 'N/A') }}<br>
+                <strong>Rewritten:</strong> {{ suggestion.get('rewritten', 'N/A') }}
+            </blockquote>
+        </details>
+    {% else %}
+        <p>No specific rewrite suggestions were generated.</p>
+    {% endfor %}<hr>
+
+    <h3><ins>Cover Letter Themes</ins></h3>
+    <ul>
+        {% for theme in analysis.analysis_data.get('cover_letter_themes', []) %}
+            <li>{{ theme }}</li>
+        {% else %}
+            <li>No specific themes were identified.</li>
+        {% endfor %}
+    </ul><hr>
+
+    <h3><ins>Analyzed Against Job Description</ins></h3>
+    <details>
+        <summary>Click to view the full job description</summary>
+        <pre style="white-space: pre-wrap; font-family: inherit;">{{ analysis.job_description }}</pre>
+    </details>
+
+</article>
+{% endblock %}

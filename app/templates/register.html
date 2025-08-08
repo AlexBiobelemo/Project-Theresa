@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    form input, form button {
+        width: 100%;
+        box-sizing: border-box; /* Ensures padding doesn't add to the width */
+    }
+</style>
+
+<div class="grid" style="justify-content: center; margin-top: 3rem;">
+    <div style="width: 100%; max-width: 450px;">
+        <article>
+            <h2 style="text-align: center;">Create an Account</h2>
+
+            <form method="POST" action="" novalidate>
+                {{ form.hidden_tag() }} <label for="{{ form.username.id }}">
+                    {{ form.username.label }}
+                    {{ form.username(autofocus=true) }}
+                    {% for error in form.username.errors %}
+                        <small style="color: var(--pico-del-color);">{{ error }}</small>
+                    {% endfor %}
+                </label>
+
+                <label for="{{ form.email.id }}">
+                    {{ form.email.label }}
+                    {{ form.email() }}
+                    {% for error in form.email.errors %}
+                        <small style="color: var(--pico-del-color);">{{ error }}</small>
+                    {% endfor %}
+                </label>
+
+                <label for="{{ form.password.id }}">
+                    {{ form.password.label }}
+                    {{ form.password() }}
+                    {% for error in form.password.errors %}
+                        <small style="color: var(--pico-del-color);">{{ error }}</small>
+                    {% endfor %}
+                </label>
+                <label for="{{ form.password2.id }}">
+                    {{ form.password2.label }}
+                    {{ form.password2() }}
+                    {% for error in form.password2.errors %}
+                        <small style="color: var(--pico-del-color);">{{ error }}</small>
+                    {% endfor %}
+                </label>
+
+                {{ form.submit(class_="contrast") }}
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">
+                <small>Already have an account? <a href="{{ url_for('main.login') }}">Log In</a></small>
+            </p>
+        </article>
+    </div>
+</div>
+{% endblock %}

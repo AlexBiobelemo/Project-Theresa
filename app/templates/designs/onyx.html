@@ -1,0 +1,22 @@
+{% extends "designs/designer_layout.html" %}
+
+{% block styles %}
+<style>
+    :root { --primary-color: #2c3e50; --secondary-color: #3498db; --text-color: #34495e; --light-grey: #ecf0f1; --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+    body { font-family: var(--font-family); background-color: var(--light-grey); }
+    #resume-editor { max-width: 8.5in; min-height: 11in; margin: 0 auto 2rem auto; background: #fff; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 2.5rem 3rem; color: var(--text-color); line-height: 1.6; }
+    .header { text-align: center; border-bottom: 3px solid var(--secondary-color); padding-bottom: 20px; margin-bottom: 30px; }
+    .header h1 { font-size: 2.8em; color: var(--primary-color); margin: 0; font-weight: 300; }
+    .contact-info { list-style: none; padding: 0; margin: 10px 0 0 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; font-size: 0.9em; }
+    .contact-info a { text-decoration: none; color: var(--secondary-color); font-weight: bold; }
+    .section-title { font-size: 1.5em; color: var(--primary-color); border-bottom: 2px solid var(--light-grey); padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+    .job-title, .degree { font-size: 1.1em; font-weight: bold; color: var(--secondary-color); }
+    .company-info, .institution-info { display: flex; justify-content: space-between; font-style: italic; margin-bottom: 10px; }
+    .responsibilities { padding-left: 20px; margin-top: 5px; }
+    .skills-list { list-style: none; padding: 0; columns: 2; }
+</style>
+{% endblock %}
+
+{% block resume_design %}
+    {% include 'designs/_onyx_content.html' %}
+{% endblock %}

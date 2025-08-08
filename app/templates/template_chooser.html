@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    /* Use the new font for headings */
+    h1, h2, h3, h4, h5, h6, header > strong {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .page-header h1 {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .page-header p {
+        font-size: 1.1rem;
+        color: var(--pico-muted-color);
+    }
+
+    .template-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .template-card {
+        /* Card Structure */
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+
+        /* Card Appearance */
+        --pico-card-padding: 1.5rem;
+        background-color: var(--pico-card-background-color);
+        border: 1px solid var(--pico-card-border-color);
+        border-radius: var(--pico-border-radius);
+        box-shadow: var(--pico-card-box-shadow);
+
+        /* Animation */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--pico-card-box-shadow), 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .template-card header {
+        padding: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .description {
+        flex-grow: 1; /* Pushes footer down */
+        color: var(--pico-muted-color);
+        font-size: 0.95rem;
+        border-bottom: 1px solid var(--pico-form-element-border-color);
+        padding-bottom: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .palette-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .palette-title {
+        font-size: 0.8rem;
+        color: var(--pico-muted-color);
+    }
+
+    .palette {
+        display: flex;
+        gap: 5px;
+    }
+
+    .palette-circle {
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px var(--pico-muted-border-color);
+    }
+
+    .template-card footer {
+        margin-top: auto; /* Pushes footer to the bottom */
+        padding: 0;
+        background: none;
+        border: none;
+    }
+
+    .template-card footer a {
+        width: 100%;
+    }
+</style>
+
+<header class="page-header" style="text-align: center; margin-top: 2rem; margin-bottom: 3rem;">
+    <h1>Choose Your Resume Design</h1>
+    <p>Select a template to begin customizing.</p>
+</header>
+
+<div class="template-grid">
+    <article class="template-card">
+        <header><strong>Onyx (Professional)</strong></header>
+        <p class="description">A clean, classic single-column layout. Timeless, professional, and easy to read. Perfect for corporate and academic roles.</p>
+        <div class="palette-container">
+            <span class="palette-title">Color Palette</span>
+            <div class="palette">
+                <span class="palette-circle" style="background-color: #2c3e50;"></span>
+                <span class="palette-circle" style="background-color: #3498db;"></span>
+                <span class="palette-circle" style="background-color: #ecf0f1;"></span>
+            </div>
+        </div>
+        <footer><a href="{{ url_for('main.designer', template_name='onyx') }}" role="button">Choose Onyx</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Coral (Creative)</strong></header>
+        <p class="description">A modern two-column design. Ideal for creative and tech-focused positions where visual presentation matters.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #4a4a4a;"></span><span class="palette-circle" style="background-color: #ff7e5f;"></span><span class="palette-circle" style="background-color: #ffffff;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='coral') }}" role="button">Choose Coral</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Mint (Minimalist)</strong></header>
+        <p class="description">An elegant, typography-focused design that uses ample whitespace. Excellent for design and marketing roles.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #008080;"></span><span class="palette-circle" style="background-color: #666666;"></span><span class="palette-circle" style="background-color: #f4f4f4;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='mint') }}" role="button">Choose Mint</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Classic ATS</strong></header>
+        <p class="description">A highly compatible, traditional serif font template. Maximizes readability for automated parsing systems.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #000000;"></span><span class="palette-circle" style="background-color: #ffffff;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='classic_ats') }}" role="button">Choose Classic ATS</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Modern ATS</strong></header>
+        <p class="description">A clean, ATS-friendly template using a modern sans-serif font. Ensures compatibility while maintaining a contemporary feel.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #222222;"></span><span class="palette-circle" style="background-color: #ffffff;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='modern_ats') }}" role="button">Choose Modern ATS</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Monochrome ATS</strong></header>
+        <p class="description">An understated and professional design using shades of grey. Extremely safe for all ATS scanners and industries.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #111;"></span><span class="palette-circle" style="background-color: #555;"></span><span class="palette-circle" style="background-color: #f0f0f0;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='monochrome_ats') }}" role="button">Choose Monochrome</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Serif Pro ATS</strong></header>
+        <p class="description">A formal and academic-leaning template using a classic serif font. Ideal for law, medicine, and higher education roles.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #222;"></span><span class="palette-circle" style="background-color: #ffffff;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='serif_pro_ats') }}" role="button">Choose Serif Pro</a></footer>
+    </article>
+
+    <article class="template-card">
+        <header><strong>Compact ATS</strong></header>
+        <p class="description">A space-efficient design with smaller text and tighter spacing. Perfect for fitting more experience onto a single page.</p>
+        <div class="palette-container"><span class="palette-title">Color Palette</span><div class="palette"><span class="palette-circle" style="background-color: #333;"></span><span class="palette-circle" style="background-color: #444;"></span><span class="palette-circle" style="background-color: #f5f5f5;"></span></div></div>
+        <footer><a href="{{ url_for('main.designer', template_name='compact_ats') }}" role="button">Choose Compact</a></footer>
+    </article>
+</div>
+{% endblock %}

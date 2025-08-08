@@ -1,0 +1,58 @@
+{% extends "designs/designer_layout.html" %}
+
+{% block styles %}
+<style>
+    body { font-family: 'Georgia', serif; background-color: #f4f4f4; }
+    #resume-editor { max-width: 8.5in; min-height: 11in; margin: 0 auto 2rem auto; background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; padding: 0; }
+    .left-column { width: 35%; background: #4a4a4a; color: #fff; padding: 2rem; }
+    .right-column { width: 65%; padding: 2rem; color: #333; }
+    .left-column h1 { font-size: 2em; margin-bottom: 0.5em; color: #ff7e5f; }
+    .left-column h2 { font-size: 1.2em; border-bottom: 1px solid #ff7e5f; padding-bottom: 5px; margin-top: 1.5rem; }
+    .contact-info p, .skills-list li { font-size: 0.9em; line-height: 1.5; }
+    .skills-list { list-style: none; padding: 0; }
+    .right-column h2 { color: #4a4a4a; border-bottom: 2px solid #ececec; }
+    .job-title { font-size: 1.1em; font-weight: bold; color: #ff7e5f; }
+    .company-info { font-style: italic; color: #555; }
+    .responsibilities { padding-left: 20px; }
+</style>
+{% endblock %}
+
+{% block resume_design %}
+    <div class="left-column">
+        <h1>{{ resume.get('full_name', 'Your Name') }}</h1>
+        <div class="contact-info">
+            <h2 class="section-title">Contact</h2>
+            {% if resume.contact_info.get('email') %}<p>{{ resume.contact_info.email }}</p>{% endif %}
+            {% if resume.contact_info.get('phone') %}<p>{{ resume.contact_info.phone }}</p>{% endif %}
+            {% if resume.contact_info.get('linkedin') %}<p>{{ resume.contact_info.linkedin }}</p>{% endif %}
+            {% if resume.contact_info.get('address') %}<p>{{ resume.contact_info.address }}</p>{% endif %}
+        </div>
+        {% if resume.get('skills') %}
+        <div>
+            <h2 class="section-title">Skills</h2>
+            <ul class="skills-list">{% for skill in resume.get('skills', []) %}<li>{{ skill }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+        {% if resume.get('education') %}
+        <div>
+            <h2 class="section-title">Education</h2>
+            {% for edu in resume.get('education', []) %}<p><strong>{{ edu.get('degree', 'Degree') }}</strong><br>{{ edu.get('institution', 'Institution') }}<br><em>{{ edu.get('graduation_date', 'Date') }}</em></p>{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="right-column">
+        {% if resume.get('summary') %}<section class="section"><h2 class="section-title">Summary</h2><p>{{ resume.summary }}</p></section>{% endif %}
+        {% if resume.get('work_experience') %}
+        <section class="section">
+            <h2 class="section-title">Work Experience</h2>
+            {% for job in resume.get('work_experience', []) %}
+            <div class="job">
+                <p class="job-title">{{ job.get('job_title', 'Job Title') }}</p>
+                <p class="company-info">{{ job.get('company', 'Company') }} | {{ job.get('location', 'Location') }} | {{ job.get('dates', 'Dates') }}</p>
+                <ul class="responsibilities">{% for resp in job.get('responsibilities', []) %}<li>{{ resp }}</li>{% endfor %}</ul>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+    </div>
+{% endblock %}

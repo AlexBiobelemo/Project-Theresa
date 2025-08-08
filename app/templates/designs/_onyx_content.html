@@ -1,0 +1,13 @@
+<header class="header">
+    <h1>{{ resume.get('full_name', 'Your Name') }}</h1>
+    <ul class="contact-info">
+        {% if resume.contact_info.get('email') %}<li><a href="mailto:{{ resume.contact_info.email }}">{{ resume.contact_info.email }}</a></li>{% endif %}
+        {% if resume.contact_info.get('phone') %}<li>{{ resume.contact_info.phone }}</li>{% endif %}
+        {% if resume.contact_info.get('linkedin') %}<li><a href="{{ resume.contact_info.linkedin }}">{{ resume.contact_info.linkedin }}</a></li>{% endif %}
+        {% if resume.contact_info.get('address') %}<li>{{ resume.contact_info.address }}</li>{% endif %}
+    </ul>
+</header>
+{% if resume.get('summary') %}<section class="section"><h2 class="section-title">Summary</h2><p>{{ resume.summary }}</p></section>{% endif %}
+{% if resume.get('work_experience') %}<section class="section"><h2 class="section-title">Work Experience</h2>{% for job in resume.get('work_experience', []) %}<div class="job"><p class="job-title">{{ job.get('job_title', 'Job Title') }}</p><div class="company-info"><span>{{ job.get('company', 'Company') }}, {{ job.get('location', 'Location') }}</span><span>{{ job.get('dates', 'Dates') }}</span></div><ul class="responsibilities">{% for resp in job.get('responsibilities', []) %}<li>{{ resp }}</li>{% endfor %}</ul></div>{% endfor %}</section>{% endif %}
+{% if resume.get('education') %}<section class="section"><h2 class="section-title">Education</h2>{% for edu in resume.get('education', []) %}<div class="education-entry"><p class="degree">{{ edu.get('degree', 'Degree') }}</p><div class="institution-info"><span>{{ edu.get('institution', 'Institution') }}, {{ edu.get('location', 'Location') }}</span><span>{{ edu.get('graduation_date', 'Graduation Date') }}</span></div></div>{% endfor %}</section>{% endif %}
+{% if resume.get('skills') %}<section class="section"><h2 class="section-title">Skills</h2><ul class="skills-list">{% for skill in resume.get('skills', []) %}<li>{{ skill }}</li>{% endfor %}</ul></section>{% endif %}

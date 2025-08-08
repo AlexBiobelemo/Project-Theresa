@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<header>
+    <h2>Your Generated Cover Letter</h2>
+    <p>Below is the AI-generated draft. Please review and edit it carefully before sending.</p>
+</header>
+
+<article>
+    <pre id="coverLetterText" style="white-space: pre-wrap; font-family: inherit; font-size: inherit;">{{ cover_letter }}</pre>
+</article>
+
+<footer>
+    <div class="grid">
+        <a href="{{ url_for('main.index') }}" role="button" class="secondary">Go Back</a>
+        <button id="copyButton">Copy Text</button>
+    </div>
+</footer>
+
+<script>
+    const copyBtn = document.getElementById('copyButton');
+    const letterTextElement = document.getElementById('coverLetterText');
+
+    copyBtn.addEventListener('click', () => {
+        // Get the text from the <pre> element
+        const textToCopy = letterTextElement.innerText;
+
+        // Use the Clipboard API to write the text
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // Provide visual feedback to the user
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = 'Copied!';
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+            }, 2000); // Change back after 2 seconds
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    });
+</script>
+
+{% endblock %}
